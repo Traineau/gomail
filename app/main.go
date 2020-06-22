@@ -29,9 +29,11 @@ var user = User{
 func main() {
 	router.POST("/login", Login)
 	router.POST("/signin", Signin)
+	router.GET("/welcome", Welcome)
 	log.Fatal(router.Run(":8080"))
 }
 
+//TODO : Check the user from the database and not from the hardcoded user
 func Login(c *gin.Context) {
 	var u User
 	if err := c.ShouldBindJSON(&u); err != nil {
@@ -53,6 +55,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, token)
 }
 
+//TODO : Create the new user and store it in database
 func Signin(c *gin.Context) {
 	var u User
 	if err := c.ShouldBindJSON(&u); err != nil {
@@ -68,6 +71,18 @@ func Signin(c *gin.Context) {
 	
 	c.SetCookie("jwt", token, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, token)
+}
+
+
+//TODO : Check the JWT stored in the user browser cookie
+func Welcome(c *gin.Context) {
+	cookie, err := c.Cookie("jwt")
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, cookie)
 }
 
 
