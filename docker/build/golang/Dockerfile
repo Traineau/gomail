@@ -13,21 +13,21 @@ RUN apk update && apk upgrade && \
 # Add Maintainer Info
 LABEL maintainer="Equipe 01 - Hetic"
 
-WORKDIR /go/src/gallery
-COPY app/go.sum app/go.mod /go/src/gallery/
+WORKDIR /go/src/gomail
+COPY app/go.sum app/go.mod /go/src/gomail/
 
 # Download all dependancies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
 
-COPY app /go/src/gallery/
+COPY app /go/src/gomail/
 
 # Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/gallery .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/gomail .
 
 FROM alpine
 
-COPY --from=builder /go/src/gallery/bin/gallery /
+COPY --from=builder /go/src/gomail/bin/gomail /
 
 EXPOSE 8080
 
-ENTRYPOINT ["/gallery"]
+ENTRYPOINT ["/gomail"]
