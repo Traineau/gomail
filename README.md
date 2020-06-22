@@ -1,4 +1,4 @@
-# Image Gallery API
+# Gomail API
 
 ## Description
 
