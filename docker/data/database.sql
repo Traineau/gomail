@@ -1,0 +1,9 @@
+/*
+    This file is used by the docker-compose build command to build the mysql db
+    
+    Tables:
+    * category : stores categories (id, name, desc, creation, update)
+    * image : stores images (id, name, desc, type, creation, update, category ID)
+    * tag : stores tags (id, name, creation date)
+    * image_tag : links images to tags by ids (Many to Many relation)
+*/
