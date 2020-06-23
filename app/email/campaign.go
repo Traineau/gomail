@@ -2,7 +2,6 @@ package email
 
 import (
 	"database/sql"
-	"log"
 )
 
 // Repository struct for db connection
@@ -43,8 +42,6 @@ func (repository *Repository) SaveCampaign(campaign *Campaign) error {
 	if err != nil {
 		return err
 	}
-
-	log.Printf("\nuser : %+v", campaign)
 
 	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IdDiffusionList)
 	if errExec != nil {
