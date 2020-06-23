@@ -4,16 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"jwt-todo/database"
+	"jwt-todo/helpers"
+	"log"
 	"net/http"
 	"time"
 )
 
 var jwtKey = []byte("my_secret_key")
-
-var users = map[string]string{
-	"user1": "password1",
-	"user2": "password2",
-}
 
 type Credentials struct {
 	Password string `json:"password"`
@@ -35,9 +33,17 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expectedPassword, ok := users[creds.Username]
-	if !ok || expectedPassword != creds.Password {
-		w.WriteHeader(http.StatusUnauthorized)
+	log.Printf("creds : %v", creds)
+
+	db := database.DbConn
+	repository := Repository{Conn: db}
+
+	user, err := repository.getUser(creds.Username, creds.Password)
+	if err != nil {
+		log.Printf("could not get user: %v", err)
+	}
+	if user == nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -65,11 +71,47 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func SignUp(w http.ResponseWriter, r *http.Request) {
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		log.Print(err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not decode request body")
+		return
+	}
+
+	log.Printf("userrr : %+v", user)
+
+	db := database.DbConn
+	repository := Repository{Conn: db}
+
+	userFromDB, err := repository.getUser(user.Username, user.Password)
+	if err != nil {
+		log.Print(err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get user from db")
+		return
+	}
+
+	if userFromDB != nil {
+		log.Print(err)
+		helpers.WriteErrorJSON(w, http.StatusBadRequest, "user already exists")
+		return
+	}
+
+	err = repository.saveUser(&user)
+	if err != nil {
+		log.Print(err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not save user in db")
+		return
+	}
+
+}
+
 func Welcome(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
-			w.WriteHeader(http.StatusUnauthorized)
+			helpers.WriteErrorJSON(w, http.StatusUnauthorized, "user is not logged in")
 			return
 		}
 		w.WriteHeader(http.StatusBadRequest)
@@ -83,18 +125,17 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
+			helpers.WriteErrorJSON(w, http.StatusUnauthorized, "invalid signature")
 			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
+		helpers.WriteErrorJSON(w, http.StatusBadRequest, "Bad request")
 		return
 	}
 	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
+		helpers.WriteErrorJSON(w, http.StatusUnauthorized, "invalid token")
 		return
 	}
-	// Finally, return the welcome message to the user, along with their
-	// username given in the token
+
 	w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
 }
 

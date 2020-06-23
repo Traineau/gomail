@@ -7,3 +7,11 @@
     * tag : stores tags (id, name, creation date)
     * image_tag : links images to tags by ids (Many to Many relation)
 */
+
+CREATE TABLE user (
+    id BIGINT NOT NULL AUTO_INCREMENT, 
+    username VARCHAR(50),
+    email VARCHAR (255),
+    password VARCHAR(50),
+    PRIMARY KEY (id)
+)
