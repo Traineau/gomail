@@ -187,12 +187,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(2 * time.Hour)
 	claims.ExpiresAt = expirationTime.Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
@@ -202,7 +197,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
+		Name:    "token",
 		Value:   tokenString,
 		Expires: expirationTime,
 	})
