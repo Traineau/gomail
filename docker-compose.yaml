@@ -35,6 +35,22 @@ services:
     networks:
       - backend
 
+  rabbitmq:
+    hostname: rabbit
+    image: rabbitmq:3-management-alpine
+    container_name: gomail-rabbitmq
+    volumes:
+        - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+        - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+        RABBITMQ_ERLANG_COOKIE: rabbitmq_cookie
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+    ports:
+        - 5672:5672
+        - 15672:15672
+
 networks:
   backend:
     driver: "bridge"
