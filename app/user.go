@@ -17,11 +17,11 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func (repository *Repository) getUser(username string, password string) (*User, error) {
+func (repository *Repository) getUser(username string) (*User, error) {
 	row := repository.Conn.QueryRow("SELECT u.id, u.username, u.email, u.password FROM user u "+
-		"WHERE u.username=(?) AND u.password=(?)", username, password)
+		"WHERE u.username=(?)", username)
 	var id int64
-	var email string
+	var email, password string
 	switch err := row.Scan(&id, &username, &email, &password); err {
 	case sql.ErrNoRows:
 		return nil, nil

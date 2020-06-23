@@ -38,12 +38,24 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	db := database.DbConn
 	repository := Repository{Conn: db}
 
-	user, err := repository.getUser(creds.Username, creds.Password)
+	user, err := repository.getUser(creds.Username)
 	if err != nil {
 		log.Printf("could not get user: %v", err)
+		return
 	}
 	if user == nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	isMatching, err := comparePasswordAndHash(creds.Password, user.Password)
+	if err != nil {
+		log.Printf("could not compare password: %v", err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not compare password")
+		return
+	}
+	if !isMatching {
+		log.Printf("password not matching")
+		helpers.WriteErrorJSON(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
 
@@ -69,6 +81,8 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		Value:   tokenString,
 		Expires: expirationTime,
 	})
+
+	helpers.WriteJSON(w, http.StatusOK, user)
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +99,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	db := database.DbConn
 	repository := Repository{Conn: db}
 
-	userFromDB, err := repository.getUser(user.Username, user.Password)
+	userFromDB, err := repository.getUser(user.Username)
 	if err != nil {
 		log.Print(err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get user from db")
@@ -98,12 +112,17 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	hash, err := generateFromPassword(user.Password)
+	user.Password = hash
+
 	err = repository.saveUser(&user)
 	if err != nil {
 		log.Print(err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not save user in db")
 		return
 	}
+
+	helpers.WriteJSON(w, http.StatusOK, user)
 
 }
 

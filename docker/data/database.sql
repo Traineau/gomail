@@ -12,6 +12,6 @@ CREATE TABLE user (
     id BIGINT NOT NULL AUTO_INCREMENT, 
     username VARCHAR(50),
     email VARCHAR (255),
-    password VARCHAR(50),
+    password VARCHAR(255),
     PRIMARY KEY (id)
 )
