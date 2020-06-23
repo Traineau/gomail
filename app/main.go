@@ -1,7 +1,7 @@
 package main
 
 import (
-	"jwt-todo/database"
+	"gomail/database"
 	"log"
 	"net/http"
 )

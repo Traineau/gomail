@@ -1,4 +1,4 @@
-package main
+package users
 
 import (
 	"database/sql"
@@ -17,7 +17,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func (repository *Repository) getUser(username string) (*User, error) {
+func (repository *Repository) GetUser(username string) (*User, error) {
 	row := repository.Conn.QueryRow("SELECT u.id, u.username, u.email, u.password FROM user u "+
 		"WHERE u.username=(?)", username)
 	var id int64
@@ -38,7 +38,7 @@ func (repository *Repository) getUser(username string) (*User, error) {
 	}
 }
 
-func (repository *Repository) saveUser(user *User) error {
+func (repository *Repository) SaveUser(user *User) error {
 	stmt, err := repository.Conn.Prepare("INSERT INTO user(username, email, password) VALUES(?,?,?)")
 	if err != nil {
 		return err

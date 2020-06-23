@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"jwt-todo/database"
-	"jwt-todo/helpers"
+	"gomail/database"
+	"gomail/helpers"
+	"gomail/users"
 	"log"
 	"net/http"
 	"time"
@@ -36,9 +37,9 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	log.Printf("creds : %v", creds)
 
 	db := database.DbConn
-	repository := Repository{Conn: db}
+	repository := users.Repository{Conn: db}
 
-	user, err := repository.getUser(creds.Username)
+	user, err := repository.GetUser(creds.Username)
 	if err != nil {
 		log.Printf("could not get user: %v", err)
 		return
@@ -86,7 +87,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
-	var user User
+	var user users.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		log.Print(err)
@@ -97,9 +98,9 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	log.Printf("userrr : %+v", user)
 
 	db := database.DbConn
-	repository := Repository{Conn: db}
+	repository := users.Repository{Conn: db}
 
-	userFromDB, err := repository.getUser(user.Username)
+	userFromDB, err := repository.GetUser(user.Username)
 	if err != nil {
 		log.Print(err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get user from db")
@@ -115,7 +116,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	hash, err := generateFromPassword(user.Password)
 	user.Password = hash
 
-	err = repository.saveUser(&user)
+	err = repository.SaveUser(&user)
 	if err != nil {
 		log.Print(err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not save user in db")
