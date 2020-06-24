@@ -82,6 +82,8 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		Expires: expirationTime,
 	})
 
+	Refresh(w, r)
+
 	helpers.WriteJSON(w, http.StatusOK, user)
 }
 
