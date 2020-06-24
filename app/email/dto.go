@@ -9,11 +9,11 @@ type Repository struct {
 
 // Recipient of an email
 type Recipient struct {
-	ID        int64
-	Email     string `json:"email"`
-	FirstName string `json:"first_name,omitempty"`
-	LastName  string `json:"last_name,omitempty"`
-	UserName  string `json:"user_name,omitempty"`
+	ID        int64  `json:"id,omitempty" db:"id"`
+	Email     string `json:"email" db:"email"`
+	FirstName string `json:"first_name" db:"first_name"`
+	LastName  string `json:"last_name" db:"last_name"`
+	UserName  string `json:"username" db:"username"`
 }
 
 // Campaign is a marketing campaign

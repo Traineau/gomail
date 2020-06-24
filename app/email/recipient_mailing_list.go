@@ -36,20 +36,61 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 	return recipients, nil
 }
 
-func (repository *Repository) AddRecipientToMailingList(recipientID int64, mailingListID int64) error {
-	stmt, err := repository.Conn.Prepare("INSERT INTO recipient_mailing_list(id_recipient, id_mailing_list) VALUES(?,?)")
+func (repository *Repository) AddRecipients(recipients []Recipient) ([]int64, error) {
+	sqlStr := "INSERT INTO recipient(email, first_name, last_name, username) VALUES "
+	var values []interface{}
+
+	for _, row := range recipients {
+		sqlStr += "(?, ?, ?, ?),"
+		values = append(values, row.Email, row.FirstName, row.LastName, row.UserName)
+	}
+	//trim the last
+	sqlStr = sqlStr[0 : len(sqlStr)-1]
+	//prepare the statement
+	stmt, err := repository.Conn.Prepare(sqlStr)
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("could not prepare stmt: %v", err)
 	}
 
-	res, errExec := stmt.Exec(recipientID, mailingListID)
+	//format all vals at once
+	res, errExec := stmt.Exec(values...)
 	if errExec != nil {
-		return fmt.Errorf("could not exec stmt: %v", errExec)
+		return nil, fmt.Errorf("could not exec stmt: %v", err)
 	}
 
-	_, errInsert := res.LastInsertId()
-	if errInsert != nil {
-		return fmt.Errorf("could not retrieve last inserted ID: %v", errInsert)
+	var insertedIDs []int64
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, fmt.Errorf("could not exec stmt: %v", err)
+	}
+
+	for i, _ := range recipients {
+		insertedIDs = append(insertedIDs, id+int64(i))
+	}
+
+	return insertedIDs, nil
+}
+func (repository *Repository) AddRecipientToMailingList(recipientIDs []int64, mailingListID int64) error {
+
+	sqlStr := "INSERT INTO recipient_mailing_list(id_recipient, id_mailing_list) VALUES "
+	var values []interface{}
+
+	for _, recipientID := range recipientIDs {
+		sqlStr += "(?, ?),"
+		values = append(values, recipientID, mailingListID)
+	}
+	//trim the last
+	sqlStr = sqlStr[0 : len(sqlStr)-1]
+	//prepare the statement
+	stmt, err := repository.Conn.Prepare(sqlStr)
+	if err != nil {
+		return fmt.Errorf("could not prepare stmt: %v", err)
+	}
+
+	//format all vals at once
+	_, errExec := stmt.Exec(values...)
+	if errExec != nil {
+		return fmt.Errorf("could not exec stmt: %v", err)
 	}
 
 	return nil

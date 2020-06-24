@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
+	"gomail/email"
 	"gomail/helpers"
 	"log"
 	"net/http"
@@ -67,9 +68,16 @@ var routes = Routes{
 	Route{
 		Name:        "Private Test",
 		Method:      "GET",
-		Pattern:     "/test",
+		Pattern:     "/mailing_list/recipient",
 		HandlerFunc: PrivateRouteTest,
 		Public:      false,
+	},
+	Route{
+		Name:        "Private Test",
+		Method:      "POST",
+		Pattern:     "/testrecipients",
+		HandlerFunc: email.TestAddRecipient,
+		Public:      true,
 	},
 }
 
