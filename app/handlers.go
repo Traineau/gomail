@@ -6,7 +6,6 @@ import (
 	"gomail/database"
 	"gomail/helpers"
 	"gomail/users"
-	"gomail/email"
 	"log"
 	"net/http"
 	"time"
@@ -170,16 +169,4 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 		Value:   tokenString,
 		Expires: expirationTime,
 	})
-}
-
-func CreateMailingList(w http.ResponseWriter, r *http.Request){
-	var mailingList email.MailingList
-	err := json.NewDecoder(r.Body).Decode(&mailingList)
-	if err != nil {
-		log.Print(err)
-		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not decode request body")
-		return
-	}
-
-	log.Printf("mailing list : %+v", mailingList)
 }

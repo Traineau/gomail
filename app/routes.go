@@ -4,6 +4,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"gomail/helpers"
+	"gomail/email"
 	"log"
 	"net/http"
 )
@@ -65,12 +66,33 @@ var routes = Routes{
 		Public:      false,
 	},
 	Route{
-		Name:        "MailingList",
+		Name:        "Create mailing list",
 		Method:      "POST",
 		Pattern:     "/mailinglist",
-		HandlerFunc: CreateMailingList,
+		HandlerFunc: email.CreateMailingList,
 		Public:      true,
 	},
+	// Route{
+	// 	Name:        "Add recipient to mailing list",
+	// 	Method:      "UPDATE",
+	// 	Pattern:     "/mailinglist/{id}",
+	// 	HandlerFunc: email.AddRecipientToMailinglist,
+	// 	Public:      true,
+	// },
+	// Route{
+	// 	Name:        "Delete recipient from mailing list",
+	// 	Method:      "DELETE",
+	// 	Pattern:     "/mailinglist/{id}",
+	// 	HandlerFunc: email.DeleteRecipientFromMailingList,
+	// 	Public:      true,
+	// },
+	// Route{
+	// 	Name:        "Create campaign",
+	// 	Method:      "POST",
+	// 	Pattern:     "/campaign",
+	// 	HandlerFunc: email.CreateCampaign,
+	// 	Public:      true,
+	// },
 	Route{
 		Name:        "Private Test",
 		Method:      "GET",

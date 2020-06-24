@@ -42,10 +42,10 @@ func Connect() error {
 	}
 
 	var dbErr error
-	for i := 1; i <= 3; i++ {
+	for i := 1; i <= 8; i++ {
 		dbErr = db.Ping()
 		if dbErr != nil {
-			if i < 3 {
+			if i < 8 {
 				log.Printf("db connection failed, %d retry : %v", i, dbErr)
 				time.Sleep(10 * time.Second)
 			}
