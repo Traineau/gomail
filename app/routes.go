@@ -61,7 +61,6 @@ var routes = Routes{
 	Route{
 		Name:        "Refresh",
 		Method:      "GET",
-		Pattern:     "/refresh",
 		HandlerFunc: Refresh,
 		Public:      false,
 	},

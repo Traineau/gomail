@@ -4,14 +4,6 @@ import (
 	"database/sql"
 )
 
-// Repository struct for db connection
-
-type MailingList struct {
-	ID          int64  `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
 func (repository *Repository) GetMailingList(id int64) (*MailingList, error) {
 	row := repository.Conn.QueryRow("SELECT m.id, m.name, m.description FROM mailing_list m "+
 		"WHERE m.id=(?)", id)

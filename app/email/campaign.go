@@ -4,18 +4,6 @@ import (
 	"database/sql"
 )
 
-// Repository struct for db connection
-type Repository struct {
-	Conn *sql.DB
-}
-
-type Campaign struct {
-	ID            int64  `json:"id"`
-	Name          string `json:"name"`
-	Description   string `json:"description"`
-	IdMailingList int64  `json:"id_mailing_list"`
-}
-
 func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 	row := repository.Conn.QueryRow("SELECT c.id, c.name, c.description, c.id_mailing_list FROM campaign c "+
 		"WHERE c.id=(?)", id)
