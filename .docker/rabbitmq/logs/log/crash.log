@@ -27,3 +27,32 @@
      Reason:     {badarg,[{erlang,list_to_integer,["find"],[]},{rabbit_disk_monitor,parse_free_unix,1,[{file,"src/rabbit_disk_monitor.erl"},{line,269}]},{rabbit_disk_monitor,internal_update,1,[{file,"src/rabbit_disk_monitor.erl"},{line,218}]},{rabbit_disk_monitor,handle_info,2,[{file,"src/rabbit_disk_monitor.erl"},{line,190}]},{gen_server,try_dispatch,4,[{file,"gen_server.erl"},{line,680}]},{gen_server,handle_msg,6,[{file,"gen_server.erl"},{line,756}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,226}]}]}
      Offender:   [{pid,<0.401.0>},{name,rabbit_disk_monitor},{mfargs,{rabbit_disk_monitor,start_link,[50000000]}},{restart_type,{transient,1}},{shutdown,30000},{child_type,worker}]
 
+2020-06-24 12:51:05 =ERROR REPORT====
+** Generic server rabbit_disk_monitor terminating 
+** Last message in was update
+** When Server state == {state,"/var/lib/rabbitmq/mnesia/rabbit@rabbit",50000000,806375415808,100,10000,#Ref<0.526186466.1490026497.59378>,false,true,10,120000}
+** Reason for termination ==
+** {badarg,[{erlang,list_to_integer,["find"],[]},{rabbit_disk_monitor,parse_free_unix,1,[{file,"src/rabbit_disk_monitor.erl"},{line,269}]},{rabbit_disk_monitor,internal_update,1,[{file,"src/rabbit_disk_monitor.erl"},{line,218}]},{rabbit_disk_monitor,handle_info,2,[{file,"src/rabbit_disk_monitor.erl"},{line,190}]},{gen_server,try_dispatch,4,[{file,"gen_server.erl"},{line,680}]},{gen_server,handle_msg,6,[{file,"gen_server.erl"},{line,756}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,226}]}]}
+2020-06-24 12:51:05 =CRASH REPORT====
+  crasher:
+    initial call: rabbit_disk_monitor:init/1
+    pid: <0.408.0>
+    registered_name: rabbit_disk_monitor
+    exception error: bad argument: [{erlang,list_to_integer,["find"],[]},{rabbit_disk_monitor,parse_free_unix,1,[{file,"src/rabbit_disk_monitor.erl"},{line,269}]},{rabbit_disk_monitor,internal_update,1,[{file,"src/rabbit_disk_monitor.erl"},{line,218}]},{rabbit_disk_monitor,handle_info,2,[{file,"src/rabbit_disk_monitor.erl"},{line,190}]},{gen_server,try_dispatch,4,[{file,"gen_server.erl"},{line,680}]},{gen_server,handle_msg,6,[{file,"gen_server.erl"},{line,756}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,226}]}]
+    ancestors: [rabbit_disk_monitor_sup,rabbit_sup,<0.268.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.407.0>]
+    dictionary: []
+    trap_exit: false
+    status: running
+    heap_size: 2586
+    stack_size: 28
+    reductions: 115360
+  neighbours:
+2020-06-24 12:51:05 =SUPERVISOR REPORT====
+     Supervisor: {local,rabbit_disk_monitor_sup}
+     Context:    child_terminated
+     Reason:     {badarg,[{erlang,list_to_integer,["find"],[]},{rabbit_disk_monitor,parse_free_unix,1,[{file,"src/rabbit_disk_monitor.erl"},{line,269}]},{rabbit_disk_monitor,internal_update,1,[{file,"src/rabbit_disk_monitor.erl"},{line,218}]},{rabbit_disk_monitor,handle_info,2,[{file,"src/rabbit_disk_monitor.erl"},{line,190}]},{gen_server,try_dispatch,4,[{file,"gen_server.erl"},{line,680}]},{gen_server,handle_msg,6,[{file,"gen_server.erl"},{line,756}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,226}]}]}
+     Offender:   [{pid,<0.408.0>},{name,rabbit_disk_monitor},{mfargs,{rabbit_disk_monitor,start_link,[50000000]}},{restart_type,{transient,1}},{shutdown,30000},{child_type,worker}]
+
