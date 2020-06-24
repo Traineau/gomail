@@ -1,9 +1,9 @@
 package main
 
 import (
-  "log"
+	"github.com/streadway/amqp"
 	"gomail/helpers"
-  "github.com/streadway/amqp"
+	"log"
 )
 
 func main() {

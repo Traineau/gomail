@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"gomail/database"
 	"gomail/helpers"
@@ -125,38 +124,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 	helpers.WriteJSON(w, http.StatusOK, user)
 
-}
-
-func Welcome(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			helpers.WriteErrorJSON(w, http.StatusUnauthorized, "user is not logged in")
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	tknStr := c.Value
-	claims := &Claims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			helpers.WriteErrorJSON(w, http.StatusUnauthorized, "invalid signature")
-			return
-		}
-		helpers.WriteErrorJSON(w, http.StatusBadRequest, "Bad request")
-		return
-	}
-	if !tkn.Valid {
-		helpers.WriteErrorJSON(w, http.StatusUnauthorized, "invalid token")
-		return
-	}
-
-	w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
 }
 
 func Refresh(w http.ResponseWriter, r *http.Request) {

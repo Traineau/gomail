@@ -2,8 +2,8 @@ package helpers
 
 import (
 	"encoding/json"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 type StatusResponse struct {
@@ -30,7 +30,7 @@ func WriteErrorJSON(w http.ResponseWriter, status int, message string) {
 
 // FailOnError Fatal error when fail
 func FailOnError(err error, msg string) {
-  if err != nil {
-    log.Fatalf("%s: %s", msg, err)
-  }
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
 }

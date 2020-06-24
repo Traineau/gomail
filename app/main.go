@@ -13,10 +13,7 @@ func main() {
 		log.Fatalf("could not connect to db: %v", err)
 	}
 
-	http.HandleFunc("/signin", Signin)
-	http.HandleFunc("/welcome", Welcome)
-	http.HandleFunc("/refresh", Refresh)
-	http.HandleFunc("/signup", SignUp)
+	router := newRouter()
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
