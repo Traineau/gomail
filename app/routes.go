@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"gomail/email"
 	"gomail/helpers"
+	"gomail/email"
 	"log"
 	"net/http"
 )
@@ -65,6 +66,34 @@ var routes = Routes{
 		HandlerFunc: Refresh,
 		Public:      false,
 	},
+	Route{
+		Name:        "Create mailing list",
+		Method:      "POST",
+		Pattern:     "/mailinglist",
+		HandlerFunc: email.CreateMailingList,
+		Public:      true,
+	},
+	// Route{
+	// 	Name:        "Add recipient to mailing list",
+	// 	Method:      "UPDATE",
+	// 	Pattern:     "/mailinglist/{id}",
+	// 	HandlerFunc: email.AddRecipientToMailinglist,
+	// 	Public:      true,
+	// },
+	// Route{
+	// 	Name:        "Delete recipient from mailing list",
+	// 	Method:      "DELETE",
+	// 	Pattern:     "/mailinglist/{id}",
+	// 	HandlerFunc: email.DeleteRecipientFromMailingList,
+	// 	Public:      true,
+	// },
+	// Route{
+	// 	Name:        "Create campaign",
+	// 	Method:      "POST",
+	// 	Pattern:     "/campaign",
+	// 	HandlerFunc: email.CreateCampaign,
+	// 	Public:      true,
+	// },
 	Route{
 		Name:        "Private Test",
 		Method:      "GET",
