@@ -18,7 +18,7 @@ type User struct {
 }
 
 func (repository *Repository) GetUser(username string) (*User, error) {
-	row := repository.Conn.QueryRow("SELECT u.id, u.username, u.email, u.password FROM user u "+
+	row := repository.Conn.QueryRow("SELECT u.id, u.username, u.email, u.password FROM api_user u "+
 		"WHERE u.username=(?)", username)
 	var id int64
 	var email, password string
@@ -39,7 +39,7 @@ func (repository *Repository) GetUser(username string) (*User, error) {
 }
 
 func (repository *Repository) SaveUser(user *User) error {
-	stmt, err := repository.Conn.Prepare("INSERT INTO user(username, email, password) VALUES(?,?,?)")
+	stmt, err := repository.Conn.Prepare("INSERT INTO api_user(username, email, password) VALUES(?,?,?)")
 	if err != nil {
 		return err
 	}

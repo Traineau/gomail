@@ -26,15 +26,13 @@ type Claims struct {
 }
 
 func Signin(w http.ResponseWriter, r *http.Request) {
-	var creds Credentials
 
+	var creds Credentials
 	err := json.NewDecoder(r.Body).Decode(&creds)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	log.Printf("creds : %v", creds)
 
 	db := database.DbConn
 	repository := users.Repository{Conn: db}
