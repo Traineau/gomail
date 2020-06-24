@@ -31,17 +31,28 @@ func CreateMailingList(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, mailingList)
 }
 
-// func CreateCampaign(w http.ResponseWriter, r *http.Request){
-// 	var campaign Campaign
-// 	err := json.NewDecoder(r.Body).Decode(&campaign)
-// 	if err != nil {
-// 		log.Print(err)
-// 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not decode request body")
-// 		return
-// 	}
+func CreateCampaign(w http.ResponseWriter, r *http.Request){
+	var campaign Campaign
+	err := json.NewDecoder(r.Body).Decode(&campaign)
+	if err != nil {
+		log.Print(err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not decode request body")
+		return
+	}
 
-// 	log.Printf("campaign : %+v", campaign)
-// }
+	db := database.DbConn
+	repository := Repository{Conn: db}
+
+	err = repository.SaveCampaign(&campaign)
+	if err != nil {
+		log.Printf("could not save campaign: %v", err)
+		return
+	}
+
+	log.Printf("campaign : %+v", campaign)
+
+	helpers.WriteJSON(w, http.StatusOK, campaign)
+}
 
 // func AddRecipientToMailinglist(w http.ResponseWriter, r *http.Request){
 // 	muxVars := mux.Vars(r)

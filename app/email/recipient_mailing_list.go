@@ -36,6 +36,10 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 	return recipients, nil
 }
 
+func (repository *Repository) SaveRecipient(recipients []*Recipient) error {
+
+}
+
 func (repository *Repository) AddRecipients(recipients []Recipient) ([]int64, error) {
 	sqlStr := "INSERT INTO recipient(email, first_name, last_name, username) VALUES "
 	var values []interface{}
