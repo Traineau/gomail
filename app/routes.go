@@ -66,6 +66,13 @@ var routes = Routes{
 		Public:      false,
 	},
 	Route{
+		Name:        "MailingList",
+		Method:      "POST",
+		Pattern:     "/mailinglist",
+		HandlerFunc: CreateMailingList,
+		Public:      true,
+	},
+	Route{
 		Name:        "Private Test",
 		Method:      "GET",
 		Pattern:     "/test",
