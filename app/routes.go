@@ -101,13 +101,6 @@ var routes = Routes{
 		HandlerFunc: PrivateRouteTest,
 		Public:      false,
 	},
-	Route{
-		Name:        "Private Test",
-		Method:      "POST",
-		Pattern:     "/testrecipients",
-		HandlerFunc: email.TestAddRecipient,
-		Public:      true,
-	},
 }
 
 func PrivateRouteTest(w http.ResponseWriter, r *http.Request) {
