@@ -10,9 +10,9 @@ type Repository struct {
 }
 
 type Campaign struct {
-	ID              int64  `json:"id"`
-	Name            string `json:"name"`
-	Description     string `json:"description"`
+	ID            int64  `json:"id"`
+	Name          string `json:"name"`
+	Description   string `json:"description"`
 	IdMailingList int64  `json:"id_mailing_list"`
 }
 
@@ -26,9 +26,9 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 		return nil, nil
 	case nil:
 		campaign := Campaign{
-			ID:              id,
-			Name:            name,
-			Description:     description,
+			ID:            id,
+			Name:          name,
+			Description:   description,
 			IdMailingList: idMailingList,
 		}
 		return &campaign, nil
