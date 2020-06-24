@@ -36,11 +36,7 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 	return recipients, nil
 }
 
-func (repository *Repository) SaveRecipient(recipients []*Recipient) error {
-
-}
-
-func (repository *Repository) AddRecipients(recipients []Recipient) ([]int64, error) {
+func (repository *Repository) AddRecipients(recipients []*Recipient) ([]int64, error) {
 	sqlStr := "INSERT INTO recipient(email, first_name, last_name, username) VALUES "
 	var values []interface{}
 
@@ -75,7 +71,6 @@ func (repository *Repository) AddRecipients(recipients []Recipient) ([]int64, er
 	return insertedIDs, nil
 }
 func (repository *Repository) AddRecipientToMailingList(recipientIDs []int64, mailingListID int64) error {
-
 	sqlStr := "INSERT INTO recipient_mailing_list(id_recipient, id_mailing_list) VALUES "
 	var values []interface{}
 
