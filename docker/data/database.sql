@@ -16,22 +16,22 @@ CREATE TABLE user (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE diffusion_list (
+CREATE TABLE mailing_list (
     id BIGINT NOT NULL AUTO_INCREMENT, 
     name VARCHAR(50),
     description TEXT,
     PRIMARY KEY(id)
 );
 
-CREATE TABLE user_diffusion_list (
+CREATE TABLE user_mailing_list (
     id_user BIGINT NOT NULL,
-    id_diffusion_list BIGINT NOT NULL
+    id_mailing_list BIGINT NOT NULL
 );
 
 CREATE TABLE campaign (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(50),
     description TEXT,
-    id_diffusion_list BIGINT NOT NULL,
+    id_mailing_list BIGINT NOT NULL,
     PRIMARY KEY(id)
 );

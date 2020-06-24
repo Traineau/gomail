@@ -13,15 +13,15 @@ type Campaign struct {
 	ID              int64  `json:"id"`
 	Name            string `json:"name"`
 	Description     string `json:"description"`
-	IdDiffusionList int64  `json:"id_diffusion_list"`
+	IdMailingList int64  `json:"id_mailing_list"`
 }
 
 func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
-	row := repository.Conn.QueryRow("SELECT c.id, c.name, c.description, c.id_diffusion_list FROM campaign c "+
+	row := repository.Conn.QueryRow("SELECT c.id, c.name, c.description, c.id_mailing_list FROM campaign c "+
 		"WHERE c.id=(?)", id)
-	var idDiffusionList int64
+	var idMailingList int64
 	var name, description string
-	switch err := row.Scan(&id, &name, &description, &idDiffusionList); err {
+	switch err := row.Scan(&id, &name, &description, &idMailingList); err {
 	case sql.ErrNoRows:
 		return nil, nil
 	case nil:
@@ -29,7 +29,7 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 			ID:              id,
 			Name:            name,
 			Description:     description,
-			IdDiffusionList: idDiffusionList,
+			IdMailingList: idMailingList,
 		}
 		return &campaign, nil
 	default:
@@ -38,12 +38,12 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 }
 
 func (repository *Repository) SaveCampaign(campaign *Campaign) error {
-	stmt, err := repository.Conn.Prepare("INSERT INTO campaign(name, description, id_diffusion_list) VALUES(?,?,?)")
+	stmt, err := repository.Conn.Prepare("INSERT INTO campaign(name, description, id_mailing_list) VALUES(?,?,?)")
 	if err != nil {
 		return err
 	}
 
-	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IdDiffusionList)
+	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IdMailingList)
 	if errExec != nil {
 		return errExec
 	}
