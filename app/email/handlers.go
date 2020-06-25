@@ -3,6 +3,7 @@ package email
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
 	"gomail/database"
 	"gomail/helpers"
 	"log"
@@ -106,3 +107,39 @@ func AddRecipientToMailinglist(w http.ResponseWriter, r *http.Request) {
 // 	log.Printf("mailing list : %+v", recipient)
 
 // }
+
+func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
+	muxVars := mux.Vars(r)
+	campaignID := muxVars["id"]
+
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	helpers.FailOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	helpers.FailOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"hello", // name
+		false,   // durable
+		false,   // delete when unused
+		false,   // exclusive
+		false,   // no-wait
+		nil,     // arguments
+	)
+	helpers.FailOnError(err, "Failed to declare a queue")
+
+	body := "Message to send campaign!" + campaignID
+	err = ch.Publish(
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	log.Printf(" [x] Sent %s", body)
+	helpers.FailOnError(err, "Failed to publish a message")
+}

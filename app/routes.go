@@ -94,6 +94,13 @@ var routes = Routes{
 		Public:      false,
 	},
 	Route{
+		Name:        "Send message",
+		Method:      "GET",
+		Pattern:     "/campaign/{id}/send",
+		HandlerFunc: email.SendCampaignMessage,
+		Public:      false,
+	},
+	Route{
 		Name:        "Private Test",
 		Method:      "GET",
 		Pattern:     "/mailing_list/recipient",
