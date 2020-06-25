@@ -1,32 +1,13 @@
-package consumer
+package main
 
 import (
-	"fmt"
-	"github.com/caarlos0/env/v6"
 	"github.com/streadway/amqp"
 	"gomail/helpers"
 	"log"
 )
 
-type RabbitMqEnv struct {
-	RabbitMqHost string `env:"RABBITMQ_HOST"`
-	RabbitMqPort string `env:"RABBITMQ_PORT"`
-	RabbitMqUser string `env:"RABBITMQ_DEFAULT_USER"`
-	RabbitMqPass string `env:"RABBITMQ_DEFAULT_PASS"`
-}
-
 func main() {
-	cfg := RabbitMqEnv{}
-	if err := env.Parse(&cfg); err != nil {
-		helpers.FailOnError(err, "Failed to parse env")
-	}
-
-	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/",
-		cfg.RabbitMqPass,
-		cfg.RabbitMqUser,
-		cfg.RabbitMqHost,
-		cfg.RabbitMqPort,
-	))
+	conn, err := amqp.Dial("amqp://guest:guest@127.0.0.1:5672/")
 
 	helpers.FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -34,6 +15,8 @@ func main() {
 	ch, err := conn.Channel()
 	helpers.FailOnError(err, "Failed to open a channel")
 	defer ch.Close()
+
+	// TODO : Call a route to get template and campaign recipients, with campaign ID
 
 	q, err := ch.QueueDeclare(
 		"hello", // name

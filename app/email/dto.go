@@ -23,6 +23,8 @@ type Campaign struct {
 	ID            int64  `json:"id"`
 	Name          string `json:"name"`
 	Description   string `json:"description"`
+	TemplateName  string `json:"template_name"`
+	TemplatePath  string `json:"template_path"`
 	IdMailingList int64  `json:"id_mailing_list"`
 }
 

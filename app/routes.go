@@ -107,6 +107,14 @@ var routes = Routes{
 		HandlerFunc: email.DeleteRecipientsFromMailinglist,
 		Public:      false,
 	},
+	// TODO : Get campaign template, path and recipients
+	// Route{
+	// 	Name:        "Get campaign template, path and recipients",
+	// 	Method:      "GET",
+	// 	Pattern:     "",
+	// 	HandlerFunc: ,
+	// 	Public:      false,
+	// },
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {
