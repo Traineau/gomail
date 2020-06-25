@@ -3,6 +3,7 @@ package email
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/caarlos0/env/v6"
 	"github.com/gorilla/mux"
 	"github.com/streadway/amqp"
 	"gomail/database"
@@ -166,11 +167,30 @@ func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, nil)
 }
 
+type RabbitMqEnv struct {
+	RabbitMqHost string `env:"RABBITMQ_HOST"`
+	RabbitMqPort string `env:"RABBITMQ_PORT"`
+	RabbitMqUser string `env:"RABBITMQ_DEFAULT_USER"`
+	RabbitMqPass string `env:"RABBITMQ_DEFAULT_PASS"`
+}
+
 func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
+	cfg := RabbitMqEnv{}
+	if err := env.Parse(&cfg); err != nil {
+		helpers.FailOnError(err, "Failed to parse env")
+	}
+
+	fmt.Printf("%+v", cfg)
+
 	muxVars := mux.Vars(r)
 	campaignID := muxVars["id"]
 
-	conn, err := amqp.Dial("amqp://guest:guest@172.31.0.2:5672/")
+	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/",
+		cfg.RabbitMqPass,
+		cfg.RabbitMqUser,
+		cfg.RabbitMqHost,
+		cfg.RabbitMqPort,
+	))
 	helpers.FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

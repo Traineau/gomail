@@ -1,13 +1,33 @@
 package consumer
 
 import (
+	"fmt"
+	"github.com/caarlos0/env/v6"
 	"github.com/streadway/amqp"
 	"gomail/helpers"
 	"log"
 )
 
+type RabbitMqEnv struct {
+	RabbitMqHost string `env:"RABBITMQ_HOST"`
+	RabbitMqPort string `env:"RABBITMQ_PORT"`
+	RabbitMqUser string `env:"RABBITMQ_DEFAULT_USER"`
+	RabbitMqPass string `env:"RABBITMQ_DEFAULT_PASS"`
+}
+
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	cfg := RabbitMqEnv{}
+	if err := env.Parse(&cfg); err != nil {
+		helpers.FailOnError(err, "Failed to parse env")
+	}
+
+	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/",
+		cfg.RabbitMqPass,
+		cfg.RabbitMqUser,
+		cfg.RabbitMqHost,
+		cfg.RabbitMqPort,
+	))
+
 	helpers.FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
