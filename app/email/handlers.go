@@ -182,7 +182,7 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 	muxVars := mux.Vars(r)
 	campaignID := muxVars["id"]
 
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@172.31.0.2:5672/")
 	helpers.FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
