@@ -74,7 +74,7 @@ var routes = Routes{
 	},
 	Route{
 		Name:        "Add recipient to mailing list",
-		Method:      "UPDATE",
+		Method:      "POST",
 		Pattern:     "/mailinglist/{id}",
 		HandlerFunc: email.AddRecipientToMailinglist,
 		Public:      false,
@@ -105,6 +105,20 @@ var routes = Routes{
 		Method:      "GET",
 		Pattern:     "/mailing_list/recipient",
 		HandlerFunc: PrivateRouteTest,
+		Public:      false,
+	},
+	Route{
+		Name:        "Get mailing list",
+		Method:      "GET",
+		Pattern:     "/mailing_list/{id}",
+		HandlerFunc: email.GetMailingList,
+		Public:      false,
+	},
+	Route{
+		Name:        "Delete recipients from mailing list",
+		Method:      "DELETE",
+		Pattern:     "/mailinglist/{id}/recipients",
+		HandlerFunc: email.DeleteRecipientsFromMailinglist,
 		Public:      false,
 	},
 }

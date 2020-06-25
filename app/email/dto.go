@@ -1,6 +1,8 @@
 package email
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 // Repository struct for db connection
 type Repository struct {
@@ -26,7 +28,8 @@ type Campaign struct {
 
 // MailingList with recipients emails
 type MailingList struct {
-	ID          int64  `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          int64        `json:"id"`
+	Name        string       `json:"name"`
+	Description string       `json:"description"`
+	Recipients  []*Recipient `json:"recipients" db:"-"`
 }

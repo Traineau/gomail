@@ -7,7 +7,8 @@ import (
 
 // Repository struct for db connection
 func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipient, error) {
-	rows, err := repository.Conn.Query("SELECT r.id, r.email, r.first_name, r.last_name, r.username"+
+	rows, err := repository.Conn.Query("SELECT r.id,"+
+		" r.email, r.first_name, r.last_name, r.username"+
 		"FROM recipient r, mailing_list ml, recipient_mailing_list rml "+
 		"WHERE r.id = rml.id_recipient AND ml.id = (?);", id)
 	if err != nil {
@@ -95,12 +96,27 @@ func (repository *Repository) AddRecipientToMailingList(recipientIDs []int64, ma
 	return nil
 }
 
-func (repository *Repository) DeleteRecipientFromMailingList(recipientID, mailingListID int64) (int64, error) {
-	res, err := repository.Conn.Exec("DELETE FROM recipient_mailing_list WHERE id_recipient=(?) "+
-		"AND id_mailing_list=(?)", recipientID, mailingListID)
+func (repository *Repository) DeleteRecipientsFromMailingList(mailingListID int64, recipientIDs []int64) (int64, error) {
+	if len(recipientIDs) == 0 {
+		return 0, nil
+	}
+	queryString := fmt.Sprintf("DELETE FROM recipient_mailing_list WHERE id_mailing_list=%d", mailingListID)
+
+	fmt.Printf("recipients : %v", recipientIDs)
+	queryString += fmt.Sprintf(" AND id_recipient=%d", recipientIDs[0])
+
+	for i, id := range recipientIDs {
+		if i == 0 {
+			continue
+		}
+		queryString += fmt.Sprintf("\nOR id_recipient=%d", id)
+	}
+
+	fmt.Printf("\nquery: %s\n", queryString)
+
+	res, err := repository.Conn.Exec(queryString)
 	if err != nil {
 		return 0, err
 	}
-
 	return res.RowsAffected()
 }

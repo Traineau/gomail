@@ -42,7 +42,8 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if user == nil {
-		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("no user found")
+		helpers.WriteErrorJSON(w, http.StatusBadRequest, "no user to connect")
 		return
 	}
 	isMatching, err := comparePasswordAndHash(creds.Password, user.Password)
@@ -79,8 +80,6 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		Value:   tokenString,
 		Expires: expirationTime,
 	})
-
-	Refresh(w, r)
 
 	helpers.WriteJSON(w, http.StatusOK, user)
 }
