@@ -17,8 +17,7 @@ func main() {
 	}
 
 	router := newRouter()
-
-	log.Print("Server started on port 8080")
+	log.Print("\nServer started on port 8080")
 	// start listening to port 8080
 	err = http.ListenAndServe(
 		":8080",
