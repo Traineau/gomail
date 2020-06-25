@@ -97,6 +97,12 @@ func AddRecipientToMailinglist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if mailingList == nil {
+		log.Printf("no mailing list by this id")
+		helpers.WriteErrorJSON(w, http.StatusNotFound, "could not find mailing list")
+		return
+	}
+
 	mailingList.Recipients = recipients
 
 	helpers.WriteJSON(w, http.StatusOK, mailingList)
@@ -126,6 +132,12 @@ func GetMailingList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("could not get mailing list: %v", err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get mailing list")
+		return
+	}
+
+	if mailingList == nil {
+		log.Printf("no mailing list by this id")
+		helpers.WriteErrorJSON(w, http.StatusNotFound, "could not find mailing list")
 		return
 	}
 

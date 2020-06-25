@@ -7,13 +7,22 @@ import (
 
 // Repository struct for db connection
 func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipient, error) {
-	rows, err := repository.Conn.Query("SELECT r.id, r.email, r.first_name, r.last_name, r.username FROM recipient r, mailing_list ml, recipient_mailing_list rml WHERE r.id = rml.id_recipient AND ml.id = (?);", id)
+	rows, err := repository.Conn.Query("SELECT r.id, r.email, r.first_name, r.last_name, r.username"+
+		"\nFROM recipient_mailing_list rml "+
+		"\nINNER JOIN recipient r "+
+		"\nON rml.id_recipient = r.id "+
+		"\nINNER JOIN mailing_list ml"+
+		"\nON rml.id_mailing_list = ml.id"+
+		"\n WHERE ml.id = (?);", id)
 	if err != nil {
 		return nil, fmt.Errorf("could not prepare query: %v", err)
 	}
 	var recipients []*Recipient
 	var email, firstName, lastName, username string
+	i := 0
+	defer rows.Close()
 	for rows.Next() {
+		i++
 		err := rows.Scan(&id, &email, &firstName, &lastName, &username)
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -29,6 +38,13 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 			UserName:  username,
 		}
 		recipients = append(recipients, recipient)
+	}
+
+	fmt.Printf("\n i: %d \n", i)
+
+	err = rows.Err()
+	if err != nil {
+		fmt.Print(err)
 	}
 
 	return recipients, nil
