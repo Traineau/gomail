@@ -141,8 +141,8 @@ func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 	strID := muxVar["id"]
 	intID, err := helpers.ParseInt64(strID)
 	if err != nil {
-		log.Printf("could not get recipientst: %v", err)
-		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get recipients")
+		log.Printf("could not parse id: %v", err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not parse id")
 		return
 	}
 
@@ -201,3 +201,5 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 	log.Printf(" [x] Sent %s", body)
 	helpers.FailOnError(err, "Failed to publish a message")
 }
+
+//TODO: add env vars

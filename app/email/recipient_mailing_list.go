@@ -7,10 +7,7 @@ import (
 
 // Repository struct for db connection
 func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipient, error) {
-	rows, err := repository.Conn.Query("SELECT r.id,"+
-		" r.email, r.first_name, r.last_name, r.username"+
-		"FROM recipient r, mailing_list ml, recipient_mailing_list rml "+
-		"WHERE r.id = rml.id_recipient AND ml.id = (?);", id)
+	rows, err := repository.Conn.Query("SELECT r.id, r.email, r.first_name, r.last_name, r.username FROM recipient r, mailing_list ml, recipient_mailing_list rml WHERE r.id = rml.id_recipient AND ml.id = (?);", id)
 	if err != nil {
 		return nil, fmt.Errorf("could not prepare query: %v", err)
 	}

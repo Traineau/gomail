@@ -1,9 +1,12 @@
 package main
 
 import (
+	"github.com/gorilla/handlers"
 	"gomail/database"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 )
 
 func main() {
@@ -16,5 +19,15 @@ func main() {
 	router := newRouter()
 
 	log.Print("Server started on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	// start listening to port 8080
+	err = http.ListenAndServe(
+		":8080",
+		handlers.CORS(
+			// Allowed origins are specified in docker-compose.yaml
+			handlers.AllowedOrigins(strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ",")),
+			handlers.AllowedHeaders([]string{"Content-Type"}),
+			handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE"}),
+		)(router),
+	)
+
 }
