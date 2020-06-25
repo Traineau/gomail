@@ -79,13 +79,6 @@ var routes = Routes{
 		HandlerFunc: email.AddRecipientToMailinglist,
 		Public:      false,
 	},
-	// Route{
-	// 	Name:        "Delete recipient from mailing list",
-	// 	Method:      "DELETE",
-	// 	Pattern:     "/mailinglist/{id}",
-	// 	HandlerFunc: email.DeleteRecipientFromMailingList,
-	// 	Public:      false,
-	// },
 	Route{
 		Name:        "Create campaign",
 		Method:      "POST",
@@ -95,22 +88,15 @@ var routes = Routes{
 	},
 	Route{
 		Name:        "Send message",
-		Method:      "GET",
+		Method:      "POST",
 		Pattern:     "/campaign/{id}/send",
 		HandlerFunc: email.SendCampaignMessage,
 		Public:      false,
 	},
 	Route{
-		Name:        "Private Test",
-		Method:      "GET",
-		Pattern:     "/mailing_list/recipient",
-		HandlerFunc: PrivateRouteTest,
-		Public:      false,
-	},
-	Route{
 		Name:        "Get mailing list",
 		Method:      "GET",
-		Pattern:     "/mailing_list/{id}",
+		Pattern:     "/mailinglist/{id}",
 		HandlerFunc: email.GetMailingList,
 		Public:      false,
 	},
@@ -121,10 +107,6 @@ var routes = Routes{
 		HandlerFunc: email.DeleteRecipientsFromMailinglist,
 		Public:      false,
 	},
-}
-
-func PrivateRouteTest(w http.ResponseWriter, r *http.Request) {
-	log.Printf("token: %+v", r.Cookies())
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {
