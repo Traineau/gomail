@@ -7,9 +7,14 @@ import (
 )
 
 var (
-	RabbitMQChan *amqp.Channel
+	RabbitMQChan  *amqp.Channel
 	RabbitMQQueue amqp.Queue
 )
+
+type RBMQQueuecreation struct {
+	RabbitMQChan  *amqp.Channel
+	RabbitMQQueue amqp.Queue
+}
 
 type RabbitMqEnv struct {
 	RabbitMqHost string `env:"RABBITMQ_HOST"`

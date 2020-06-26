@@ -182,17 +182,19 @@ func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
-	ch := RabbitMQChan
-	q := RabbitMQQueue
+	rbmqChanCreation := RBMQQueuecreation{
+		RabbitMQChan:  RabbitMQChan,
+		RabbitMQQueue: RabbitMQQueue,
+	}
 	muxVars := mux.Vars(r)
 	campaignID := muxVars["id"]
 
 	body := "Message to send campaign!" + campaignID
-	err := ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
+	err := rbmqChanCreation.RabbitMQChan.Publish(
+		"",                                  // exchange
+		rbmqChanCreation.RabbitMQQueue.Name, // routing key
+		false,                               // mandatory
+		false,                               // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte(body),
