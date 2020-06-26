@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gorilla/handlers"
 	"gomail/database"
+	"gomail/email"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +15,11 @@ func main() {
 	err := database.Connect()
 	if err != nil {
 		log.Fatalf("could not connect to db: %v", err)
+	}
+
+	err = email.ConnectToRabbitMQ()
+	if err != nil {
+		log.Fatalf("could not connect to RabbitMQ: %v", err)
 	}
 
 	router := newRouter()

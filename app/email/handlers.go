@@ -2,8 +2,6 @@ package email
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/caarlos0/env/v6"
 	"github.com/gorilla/mux"
 	"github.com/streadway/amqp"
 	"gomail/database"
@@ -183,47 +181,14 @@ func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, nil)
 }
 
-type RabbitMqEnv struct {
-	RabbitMqHost string `env:"RABBITMQ_HOST"`
-	RabbitMqPort string `env:"RABBITMQ_PORT"`
-	RabbitMqUser string `env:"RABBITMQ_DEFAULT_USER"`
-	RabbitMqPass string `env:"RABBITMQ_DEFAULT_PASS"`
-}
-
 func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
-	cfg := RabbitMqEnv{}
-	if err := env.Parse(&cfg); err != nil {
-		helpers.FailOnError(err, "Failed to parse env")
-	}
-
+	ch := RabbitMQChan
+	q := RabbitMQQueue
 	muxVars := mux.Vars(r)
 	campaignID := muxVars["id"]
 
-	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/",
-		cfg.RabbitMqPass,
-		cfg.RabbitMqUser,
-		cfg.RabbitMqHost,
-		cfg.RabbitMqPort,
-	))
-	helpers.FailOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
-
-	ch, err := conn.Channel()
-	helpers.FailOnError(err, "Failed to open a channel")
-	defer ch.Close()
-
-	q, err := ch.QueueDeclare(
-		"hello", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
-	)
-	helpers.FailOnError(err, "Failed to declare a queue")
-
 	body := "Message to send campaign!" + campaignID
-	err = ch.Publish(
+	err := ch.Publish(
 		"",     // exchange
 		q.Name, // routing key
 		false,  // mandatory
