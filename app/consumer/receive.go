@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/streadway/amqp"
-	"gomail/helpers"
+	"github.com/Traineau/gomail/helpers"
 	"log"
+	"github.com/Traineau/gomail/email"
+	"encoding/json"
 )
 
 func main() {
@@ -15,8 +17,6 @@ func main() {
 	ch, err := conn.Channel()
 	helpers.FailOnError(err, "Failed to open a channel")
 	defer ch.Close()
-
-	// TODO : Call a route to get template and campaign recipients, with campaign ID
 
 	q, err := ch.QueueDeclare(
 		"hello", // name
@@ -43,7 +43,13 @@ func main() {
 
 	go func() {
 		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
+			var campaignID email.CampaignID
+			err := json.Unmarshal(d.Body, &campaignID)
+			if err != nil {
+				log.Printf("ERROR %+v", err)
+			}
+
+			log.Printf("Received a message: %+v", campaignID)
 		}
 	}()
 

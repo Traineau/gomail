@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
-	"gomail/database"
-	"gomail/helpers"
-	"gomail/users"
+	"github.com/Traineau/gomail/database"
+	"github.com/Traineau/gomail/helpers"
+	"github.com/Traineau/gomail/users"
 	"log"
 	"net/http"
 	"time"

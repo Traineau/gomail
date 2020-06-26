@@ -35,3 +35,7 @@ type MailingList struct {
 	Description string       `json:"description"`
 	Recipients  []*Recipient `json:"recipients" db:"-"`
 }
+
+type CampaignID struct {
+	ID          int64        `json:"id"`
+}

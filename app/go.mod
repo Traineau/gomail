@@ -1,4 +1,4 @@
-module gomail
+module github.com/Traineau/gomail
 
 go 1.14
 

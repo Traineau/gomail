@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	"gomail/email"
-	"gomail/helpers"
+	"github.com/Traineau/gomail/email"
+	"github.com/Traineau/gomail/helpers"
 	"log"
 	"net/http"
 )

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/caarlos0/env/v6"
 	"github.com/streadway/amqp"
+	"time"
 )
 
 var (
@@ -24,6 +25,7 @@ type RabbitMqEnv struct {
 }
 
 func ConnectToRabbitMQ() error {
+	time.Sleep(50 * time.Second)
 	cfg := RabbitMqEnv{}
 	if err := env.Parse(&cfg); err != nil {
 		return fmt.Errorf("failed to parse env: %v", err)
@@ -40,13 +42,11 @@ func ConnectToRabbitMQ() error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to RabbitMQ: %v", err)
 	}
-	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
 		return fmt.Errorf("failed to open a channel: %v", err)
 	}
-	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
 		"hello", // name

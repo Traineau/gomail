@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/streadway/amqp"
-	"gomail/database"
-	"gomail/helpers"
+	"github.com/Traineau/gomail/database"
+	"github.com/Traineau/gomail/helpers"
 	"log"
 	"net/http"
 )
@@ -187,10 +187,25 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 		RabbitMQQueue: RabbitMQQueue,
 	}
 	muxVars := mux.Vars(r)
-	campaignID := muxVars["id"]
 
-	body := "Message to send campaign!" + campaignID
-	err := rbmqChanCreation.RabbitMQChan.Publish(
+	campaignId, err := helpers.ParseInt64(muxVars["id"])
+	if err != nil {
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not parse id")
+		return
+	}
+
+	campaignID := CampaignID{
+		ID: campaignId,
+	}
+
+	body, err := json.Marshal(campaignID)
+	if err != nil {
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not parse id to json")
+		return
+	}
+	
+
+	err = rbmqChanCreation.RabbitMQChan.Publish(
 		"",                                  // exchange
 		rbmqChanCreation.RabbitMQQueue.Name, // routing key
 		false,                               // mandatory
@@ -200,6 +215,6 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 			Body:        []byte(body),
 		})
 
-	log.Printf(" [x] Sent %s", body)
+	log.Printf("Sent %s", body)
 	helpers.FailOnError(err, "Failed to publish a message")
 }
