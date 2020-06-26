@@ -42,7 +42,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if user == nil {
-		log.Printf("no user found")
+		log.Print("no user found")
 		helpers.WriteErrorJSON(w, http.StatusBadRequest, "no user to connect")
 		return
 	}
@@ -53,7 +53,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !isMatching {
-		log.Printf("password not matching")
+		log.Print("password not matching")
 		helpers.WriteErrorJSON(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
@@ -81,7 +81,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		Expires: expirationTime,
 	})
 
-	helpers.WriteJSON(w, http.StatusOK, user)
+	helpers.WriteJSON(w, http.StatusOK, "user logged in")
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
@@ -92,8 +92,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not decode request body")
 		return
 	}
-
-	log.Printf("userrr : %+v", user)
 
 	db := database.DbConn
 	repository := users.Repository{Conn: db}
@@ -112,6 +110,11 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	hash, err := generateFromPassword(user.Password)
+	if err != nil {
+		log.Print(err)
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not safely save user")
+		return
+	}
 	user.Password = hash
 
 	err = repository.SaveUser(&user)
@@ -121,7 +124,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helpers.WriteJSON(w, http.StatusOK, user)
+	helpers.WriteJSON(w, http.StatusOK, "user registered")
 
 }
 
@@ -141,16 +144,16 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
-	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 

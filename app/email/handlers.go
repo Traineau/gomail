@@ -31,7 +31,6 @@ func CreateMailingList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("mailing list : %+v", mailingList)
-
 	helpers.WriteJSON(w, http.StatusOK, mailingList)
 }
 
@@ -69,7 +68,7 @@ func AddRecipientToMailinglist(w http.ResponseWriter, r *http.Request) {
 	db := database.DbConn
 	repository := Repository{Conn: db}
 
-	ids, err := repository.AddRecipients(recipients)
+	ids, err := repository.SaveRecipients(recipients)
 	if err != nil {
 		log.Printf("could not save recipients list: %v", err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not save recipients")
@@ -167,15 +166,20 @@ func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("recipients : %v", recipientIDS)
-
 	deletedRows, err := repository.DeleteRecipientsFromMailingList(intID, recipientIDS)
 	if err != nil {
 		log.Printf("could not delete recipient from mailing list: %v", err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not delete recipient from mailing list:")
 		return
 	}
-	log.Printf("deleted %d recipients", deletedRows)
+
+	recipientStr := "recipients"
+
+	if deletedRows <= 1 {
+		recipientStr = "recipient"
+	}
+
+	log.Printf("deleted %d %s", deletedRows, recipientStr)
 	helpers.WriteJSON(w, http.StatusOK, nil)
 }
 
@@ -191,8 +195,6 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 	if err := env.Parse(&cfg); err != nil {
 		helpers.FailOnError(err, "Failed to parse env")
 	}
-
-	fmt.Printf("%+v", cfg)
 
 	muxVars := mux.Vars(r)
 	campaignID := muxVars["id"]
@@ -230,8 +232,7 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
+
 	log.Printf(" [x] Sent %s", body)
 	helpers.FailOnError(err, "Failed to publish a message")
 }
-
-//TODO: add env vars

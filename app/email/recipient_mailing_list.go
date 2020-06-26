@@ -19,10 +19,8 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 	}
 	var recipients []*Recipient
 	var email, firstName, lastName, username string
-	i := 0
 	defer rows.Close()
 	for rows.Next() {
-		i++
 		err := rows.Scan(&id, &email, &firstName, &lastName, &username)
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -40,8 +38,6 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 		recipients = append(recipients, recipient)
 	}
 
-	fmt.Printf("\n i: %d \n", i)
-
 	err = rows.Err()
 	if err != nil {
 		fmt.Print(err)
@@ -50,7 +46,7 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 	return recipients, nil
 }
 
-func (repository *Repository) AddRecipients(recipients []*Recipient) ([]int64, error) {
+func (repository *Repository) SaveRecipients(recipients []*Recipient) ([]int64, error) {
 	sqlStr := "INSERT INTO recipient(email, first_name, last_name, username) VALUES "
 	var values []interface{}
 
@@ -114,8 +110,6 @@ func (repository *Repository) DeleteRecipientsFromMailingList(mailingListID int6
 		return 0, nil
 	}
 	queryString := fmt.Sprintf("DELETE FROM recipient_mailing_list WHERE id_mailing_list=%d", mailingListID)
-
-	fmt.Printf("recipients : %v", recipientIDs)
 	queryString += fmt.Sprintf(" AND id_recipient=%d", recipientIDs[0])
 
 	for i, id := range recipientIDs {
@@ -124,8 +118,6 @@ func (repository *Repository) DeleteRecipientsFromMailingList(mailingListID int6
 		}
 		queryString += fmt.Sprintf("\nOR id_recipient=%d", id)
 	}
-
-	fmt.Printf("\nquery: %s\n", queryString)
 
 	res, err := repository.Conn.Exec(queryString)
 	if err != nil {
