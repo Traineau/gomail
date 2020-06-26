@@ -2,10 +2,10 @@ package email
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/streadway/amqp"
 	"github.com/Traineau/gomail/database"
 	"github.com/Traineau/gomail/helpers"
+	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
 	"log"
 	"net/http"
 )
@@ -194,7 +194,7 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	campaignID := CampaignID{
+	campaignID := Campaign{
 		ID: campaignId,
 	}
 
@@ -203,7 +203,6 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not parse id to json")
 		return
 	}
-	
 
 	err = rbmqChanCreation.RabbitMQChan.Publish(
 		"",                                  // exchange

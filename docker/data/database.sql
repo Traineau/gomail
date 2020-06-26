@@ -39,8 +39,10 @@ CREATE TABLE recipient_mailing_list (
 
 CREATE TABLE campaign (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(50),
+    name VARCHAR(50) DEFAULT "",
     description TEXT,
+    template_name VARCHAR(255) DEFAULT "",
+    template_path VARCHAR(255) DEFAULT "",
     id_mailing_list BIGINT NOT NULL,
     PRIMARY KEY(id)
 );

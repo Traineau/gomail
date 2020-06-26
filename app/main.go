@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/gorilla/handlers"
 	"github.com/Traineau/gomail/database"
 	"github.com/Traineau/gomail/email"
+	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
 	"os"

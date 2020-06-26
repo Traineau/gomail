@@ -5,11 +5,11 @@ import (
 )
 
 func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
-	row := repository.Conn.QueryRow("SELECT c.id, c.name, c.description, c.id_mailing_list FROM campaign c "+
+	row := repository.Conn.QueryRow("SELECT c.id, c.name, c.description, c.template_name, c.template_path, c.id_mailing_list FROM campaign c "+
 		"WHERE c.id=(?)", id)
 	var idMailingList int64
-	var name, description string
-	switch err := row.Scan(&id, &name, &description, &idMailingList); err {
+	var name, description, templateName, templatePath string
+	switch err := row.Scan(&id, &name, &description, &templateName, &templatePath, &idMailingList); err {
 	case sql.ErrNoRows:
 		return nil, nil
 	case nil:
@@ -17,6 +17,8 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 			ID:            id,
 			Name:          name,
 			Description:   description,
+			TemplateName:  templateName,
+			TemplatePath:  templatePath,
 			IdMailingList: idMailingList,
 		}
 		return &campaign, nil

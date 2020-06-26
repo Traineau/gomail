@@ -21,11 +21,11 @@ type Recipient struct {
 // Campaign is a marketing campaign
 type Campaign struct {
 	ID            int64  `json:"id"`
-	Name          string `json:"name"`
-	Description   string `json:"description"`
-	TemplateName  string `json:"template_name"`
-	TemplatePath  string `json:"template_path"`
-	IdMailingList int64  `json:"id_mailing_list"`
+	Name          string `json:"name,omitempty"`
+	Description   string `json:"description,omitempty"`
+	TemplateName  string `json:"template_name,omitempty"`
+	TemplatePath  string `json:"template_path,omitempty"`
+	IdMailingList int64  `json:"id_mailing_list,omitempty"`
 }
 
 // MailingList with recipients emails
@@ -37,5 +37,5 @@ type MailingList struct {
 }
 
 type CampaignID struct {
-	ID          int64        `json:"id"`
+	ID int64 `json:"id"`
 }
