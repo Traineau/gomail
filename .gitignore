@@ -1,2 +1,5 @@
+.idea/*
 .env
 .DS_Store
+.docker/rabbitmq/data/*
+.docker/rabbitmq/logs

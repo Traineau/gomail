@@ -1,5 +1,24 @@
 version: "3.7"
 services:
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3-management-alpine
+    container_name: gomail-rabbitmq
+    volumes:
+        - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+        - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+        RABBITMQ_HOST: rabbitmq
+        RABBITMQ_ERLANG_COOKIE: rabbitmq_cookie
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+        RABBITMQ_PORT: 5672
+    ports:
+        - 5672:5672
+        - 15672:15672
+    networks:
+      - backend
   db:
     image: mysql:8
     restart: always
@@ -22,18 +41,25 @@ services:
       context: ./
       dockerfile: ./docker/build/golang/Dockerfile
     environment:
-      CORS_ALLOWED_ORIGINS: "http://localhost:8000"
+      CORS_ALLOWED_ORIGINS: "http://localhost:8000,http://localhost:5672"
       API_PORT: "8080"
       MYSQL_USER: gomail
       MYSQL_PASSWORD: gomail
       MYSQL_DATABASE: image_gomail
       DB_HOST: tcp(db:3306)
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_ERLANG_COOKIE: rabbitmq_cookie
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_PORT: 5672
     ports:
       - "8080:8080"
     volumes:
       - ./app:/go:rw
     networks:
       - backend
+    depends_on: 
+      - rabbitmq
 
 networks:
   backend:
