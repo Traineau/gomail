@@ -1,0 +1,27 @@
+name: CI
+on: push
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Set golang@1.14.1-alpine3.11
+        uses: actions/setup-go@v2-beta
+        with:
+          go-version: "^1.14.1-alpine3.11"
+
+      - name: Check version
+        run: go version
+
+      - name: Format
+        uses: sjkaliski/go-github-actions/fmt@v0.5.0
+
+      - name: Test
+        run: go test -cover
+
+      - name: Build
+        run: GOOS=linux go build -ldflags="-s -w" -o bin/test ./main.go
