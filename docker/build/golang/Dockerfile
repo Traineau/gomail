@@ -14,12 +14,12 @@ RUN apk update && apk upgrade && \
 LABEL maintainer="Equipe 01 - Hetic"
 
 WORKDIR /go/src/gomail
-COPY app/go.sum app/go.mod /go/src/gomail/
+COPY go.sum go.mod /go/src/gomail/
 
 # Download all dependancies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
 
-COPY app /go/src/gomail/
+COPY . /go/src/gomail/
 
 # Build the Go app
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/gomail .

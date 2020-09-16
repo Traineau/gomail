@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/caarlos0/env/v6"
 	"log"
 
+	"github.com/caarlos0/env/v6"
 	// blank import for mysql driver
 	_ "github.com/go-sql-driver/mysql"
 	"time"
