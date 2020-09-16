@@ -1,9 +1,9 @@
 package router
 
 import (
+	"github.com/Traineau/gomail/auth"
 	"github.com/Traineau/gomail/email"
 	"github.com/Traineau/gomail/helpers"
-	"github.com/Traineau/gomail/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"log"
@@ -50,20 +50,20 @@ var routes = Routes{
 		Name:        "Sign In",
 		Method:      "POST",
 		Pattern:     "/signin",
-		HandlerFunc: user.Signin,
+		HandlerFunc: auth.Signin,
 		Public:      true,
 	},
 	Route{
 		Name:        "Sign Up",
 		Method:      "POST",
 		Pattern:     "/signup",
-		HandlerFunc: user.SignUp,
+		HandlerFunc: auth.SignUp,
 		Public:      true,
 	},
 	Route{
 		Name:        "Refresh",
 		Method:      "GET",
-		HandlerFunc: user.Refresh,
+		HandlerFunc: auth.Refresh,
 		Public:      false,
 	},
 	Route{
@@ -124,7 +124,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		c, err := r.Cookie("token")
 		if err != nil {
 			if err == http.ErrNoCookie {
-				helpers.WriteErrorJSON(w, http.StatusUnauthorized, "user is not logged in")
+				helpers.WriteErrorJSON(w, http.StatusUnauthorized, "auth is not logged in")
 				return
 			}
 			w.WriteHeader(http.StatusBadRequest)
@@ -132,9 +132,9 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		}
 
 		tknStr := c.Value
-		claims := &user.Claims{}
+		claims := &auth.Claims{}
 		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-			return user.JwtKey, nil
+			return auth.JwtKey, nil
 		})
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
@@ -149,7 +149,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		user.Refresh(w, r)
+		auth.Refresh(w, r)
 
 		next.ServeHTTP(w, r)
 	})

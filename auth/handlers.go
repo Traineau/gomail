@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"encoding/json"
@@ -39,12 +39,12 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 
 	user, err := repository.GetUser(creds.Username)
 	if err != nil {
-		log.Printf("could not get user: %v", err)
+		log.Printf("could not get auth: %v", err)
 		return
 	}
 	if user == nil {
-		log.Print("no user found")
-		helpers.WriteErrorJSON(w, http.StatusBadRequest, "no user to connect")
+		log.Print("no auth found")
+		helpers.WriteErrorJSON(w, http.StatusBadRequest, "no auth to connect")
 		return
 	}
 	isMatching, err := password.ComparePasswordAndHash(creds.Password, user.Password)
@@ -82,7 +82,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		Expires: expirationTime,
 	})
 
-	helpers.WriteJSON(w, http.StatusOK, "user logged in")
+	helpers.WriteJSON(w, http.StatusOK, "auth logged in")
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
@@ -100,20 +100,20 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	userFromDB, err := repository.GetUser(user.Username)
 	if err != nil {
 		log.Print(err)
-		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get user from db")
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get auth from db")
 		return
 	}
 
 	if userFromDB != nil {
 		log.Print(err)
-		helpers.WriteErrorJSON(w, http.StatusBadRequest, "user already exists")
+		helpers.WriteErrorJSON(w, http.StatusBadRequest, "auth already exists")
 		return
 	}
 
 	hash, err := password.GenerateFromPassword(user.Password)
 	if err != nil {
 		log.Print(err)
-		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not safely save user")
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not safely save auth")
 		return
 	}
 	user.Password = hash
@@ -121,11 +121,11 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	err = repository.SaveUser(&user)
 	if err != nil {
 		log.Print(err)
-		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not save user in db")
+		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not save auth in db")
 		return
 	}
 
-	helpers.WriteJSON(w, http.StatusOK, "user registered")
+	helpers.WriteJSON(w, http.StatusOK, "auth registered")
 
 }
 
