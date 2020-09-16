@@ -1,16 +1,18 @@
-package gomail
+package user
 
 import (
 	"encoding/json"
 	"github.com/Traineau/gomail/database"
 	"github.com/Traineau/gomail/helpers"
+	"github.com/Traineau/gomail/helpers/password"
 	"github.com/Traineau/gomail/users"
+	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
 	"time"
 )
 
-var jwtKey = []byte("my_secret_key")
+var JwtKey = []byte("my_secret_key")
 
 type Credentials struct {
 	Password string `json:"password"`
@@ -45,7 +47,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		helpers.WriteErrorJSON(w, http.StatusBadRequest, "no user to connect")
 		return
 	}
-	isMatching, err := comparePasswordAndHash(creds.Password, user.Password)
+	isMatching, err := password.ComparePasswordAndHash(creds.Password, user.Password)
 	if err != nil {
 		log.Printf("could not compare password: %v", err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not compare password")
@@ -68,7 +70,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -108,7 +110,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hash, err := generateFromPassword(user.Password)
+	hash, err := password.GenerateFromPassword(user.Password)
 	if err != nil {
 		log.Print(err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not safely save user")
@@ -141,7 +143,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	tknStr := c.Value
 	claims := &Claims{}
 	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
+		return JwtKey, nil
 	})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
@@ -159,7 +161,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	expirationTime := time.Now().Add(2 * time.Hour)
 	claims.ExpiresAt = expirationTime.Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/caarlos0/env/v6"
 	// blank import for mysql driver
 	_ "github.com/go-sql-driver/mysql"
 	"time"

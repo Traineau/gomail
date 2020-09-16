@@ -1,8 +1,10 @@
-package gomail
+package router
 
 import (
 	"github.com/Traineau/gomail/email"
 	"github.com/Traineau/gomail/helpers"
+	"github.com/Traineau/gomail/user"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -21,7 +23,7 @@ type Route struct {
 type Routes []Route
 
 // newRouter registers public routes
-func newRouter() *mux.Router {
+func NewRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 	authenticatedRouter := router.PathPrefix("/").Subrouter()
@@ -48,20 +50,20 @@ var routes = Routes{
 		Name:        "Sign In",
 		Method:      "POST",
 		Pattern:     "/signin",
-		HandlerFunc: Signin,
+		HandlerFunc: user.Signin,
 		Public:      true,
 	},
 	Route{
 		Name:        "Sign Up",
 		Method:      "POST",
 		Pattern:     "/signup",
-		HandlerFunc: SignUp,
+		HandlerFunc: user.SignUp,
 		Public:      true,
 	},
 	Route{
 		Name:        "Refresh",
 		Method:      "GET",
-		HandlerFunc: Refresh,
+		HandlerFunc: user.Refresh,
 		Public:      false,
 	},
 	Route{
@@ -130,9 +132,9 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		}
 
 		tknStr := c.Value
-		claims := &Claims{}
+		claims := &user.Claims{}
 		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
+			return user.JwtKey, nil
 		})
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
@@ -147,7 +149,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		Refresh(w, r)
+		user.Refresh(w, r)
 
 		next.ServeHTTP(w, r)
 	})

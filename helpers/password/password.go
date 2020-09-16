@@ -1,4 +1,4 @@
-package gomail
+package password
 
 import (
 	"crypto/rand"
@@ -23,7 +23,7 @@ type params struct {
 	keyLength   uint32
 }
 
-func generateFromPassword(password string) (encodedHash string, err error) {
+func GenerateFromPassword(password string) (encodedHash string, err error) {
 	p := &params{
 		memory:      64 * 1024,
 		iterations:  3,
@@ -33,7 +33,7 @@ func generateFromPassword(password string) (encodedHash string, err error) {
 	}
 
 	// Generate a cryptographically secure random salt.
-	salt, err := generateRandomBytes(p.saltLength)
+	salt, err := GenerateRandomBytes(p.saltLength)
 	if err != nil {
 		return "", err
 	}
@@ -52,7 +52,7 @@ func generateFromPassword(password string) (encodedHash string, err error) {
 	return encodedHash, nil
 }
 
-func generateRandomBytes(n uint32) ([]byte, error) {
+func GenerateRandomBytes(n uint32) ([]byte, error) {
 	b := make([]byte, n)
 	_, err := rand.Read(b)
 	if err != nil {
@@ -62,10 +62,10 @@ func generateRandomBytes(n uint32) ([]byte, error) {
 	return b, nil
 }
 
-func comparePasswordAndHash(password, encodedHash string) (match bool, err error) {
+func ComparePasswordAndHash(password, encodedHash string) (match bool, err error) {
 	// Extract the parameters, salt and derived key from the encoded password
 	// hash.
-	p, salt, hash, err := decodeHash(encodedHash)
+	p, salt, hash, err := DecodeHash(encodedHash)
 	if err != nil {
 		return false, err
 	}
@@ -82,7 +82,7 @@ func comparePasswordAndHash(password, encodedHash string) (match bool, err error
 	return false, nil
 }
 
-func decodeHash(encodedHash string) (p *params, salt, hash []byte, err error) {
+func DecodeHash(encodedHash string) (p *params, salt, hash []byte, err error) {
 	vals := strings.Split(encodedHash, "$")
 	if len(vals) != 6 {
 		return nil, nil, nil, ErrInvalidHash
