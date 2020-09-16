@@ -1,11 +1,10 @@
-package main
+package gomail
 
 import (
 	"encoding/json"
 	"github.com/Traineau/gomail/database"
 	"github.com/Traineau/gomail/helpers"
 	"github.com/Traineau/gomail/users"
-	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
 	"time"

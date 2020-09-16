@@ -4,6 +4,7 @@ import (
 	"github.com/Traineau/gomail/database"
 	"github.com/Traineau/gomail/email"
 	"github.com/gorilla/handlers"
+	"gomail"
 	"log"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func main() {
 		log.Fatalf("could not connect to RabbitMQ: %v", err)
 	}
 
-	router := newRouter()
+	router := gomail.newRouter()
 	log.Print("\nServer started on port 8080")
 	// start listening to port 8080
 	err = http.ListenAndServe(

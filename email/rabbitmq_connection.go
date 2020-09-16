@@ -2,7 +2,6 @@ package email
 
 import (
 	"fmt"
-	"github.com/caarlos0/env/v6"
 	"github.com/streadway/amqp"
 	"time"
 )

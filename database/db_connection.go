@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/caarlos0/env/v6"
 	"log"
 
 	// blank import for mysql driver

@@ -1,9 +1,8 @@
-package main
+package gomail
 
 import (
 	"github.com/Traineau/gomail/email"
 	"github.com/Traineau/gomail/helpers"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
