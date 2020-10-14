@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+//StatusResponse is a status response model
 type StatusResponse struct {
 	Status  string `json:"status"`
 	Message string `json:"message,omitempty"`

@@ -12,19 +12,22 @@ import (
 	"time"
 )
 
+//JwtKey is the JSONWebToken key used for auth
 var JwtKey = []byte("my_secret_key")
 
+//Credentials are the credentials used for auth
 type Credentials struct {
 	Password string `json:"password"`
 	Username string `json:"username"`
 }
 
-//
+//Claims is a claims model
 type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
+//Signin is used for signing in
 func Signin(w http.ResponseWriter, r *http.Request) {
 
 	var creds Credentials
@@ -85,6 +88,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, "auth logged in")
 }
 
+//SignUp is used for signing up
 func SignUp(w http.ResponseWriter, r *http.Request) {
 	var user users.User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -129,6 +133,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//Refresh is used for refreshing the token
 func Refresh(w http.ResponseWriter, r *http.Request) {
 	// (BEGIN) The code uptil this point is the same as the first part of the `Welcome` route
 	c, err := r.Cookie("token")

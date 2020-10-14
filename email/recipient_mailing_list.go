@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Repository struct for db connection
+//GetRecipientsFromMailingList is for getting all recipients from a mailing list
 func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipient, error) {
 	rows, err := repository.Conn.Query("SELECT r.id, r.email, r.first_name, r.last_name, r.username"+
 		"\nFROM recipient_mailing_list rml "+
@@ -46,6 +46,7 @@ func (repository *Repository) GetRecipientsFromMailingList(id int64) ([]*Recipie
 	return recipients, nil
 }
 
+//SaveRecipients is for saving new recipients
 func (repository *Repository) SaveRecipients(recipients []*Recipient) ([]int64, error) {
 	sqlStr := "INSERT INTO recipient(email, first_name, last_name, username) VALUES "
 	var values []interface{}
@@ -74,12 +75,14 @@ func (repository *Repository) SaveRecipients(recipients []*Recipient) ([]int64, 
 		return nil, fmt.Errorf("could not exec stmt: %v", err)
 	}
 
-	for i, _ := range recipients {
+	for i := range recipients {
 		insertedIDs = append(insertedIDs, id+int64(i))
 	}
 
 	return insertedIDs, nil
 }
+
+//AddRecipientToMailingList is for adding recipients to a mailing list
 func (repository *Repository) AddRecipientToMailingList(recipientIDs []int64, mailingListID int64) error {
 	sqlStr := "INSERT INTO recipient_mailing_list(id_recipient, id_mailing_list) VALUES "
 	var values []interface{}
@@ -105,6 +108,7 @@ func (repository *Repository) AddRecipientToMailingList(recipientIDs []int64, ma
 	return nil
 }
 
+//DeleteRecipientsFromMailingList is for deleting recipients from a mailing list
 func (repository *Repository) DeleteRecipientsFromMailingList(mailingListID int64, recipientIDs []int64) (int64, error) {
 	if len(recipientIDs) == 0 {
 		return 0, nil

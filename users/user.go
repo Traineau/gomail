@@ -10,6 +10,7 @@ type Repository struct {
 	Conn *sql.DB
 }
 
+//User is a user model
 type User struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
@@ -17,6 +18,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
+//GetUser is for getting a user by username
 func (repository *Repository) GetUser(username string) (*User, error) {
 	row := repository.Conn.QueryRow("SELECT u.id, u.username, u.email, u.password FROM api_user u "+
 		"WHERE u.username=(?)", username)
@@ -38,6 +40,7 @@ func (repository *Repository) GetUser(username string) (*User, error) {
 	}
 }
 
+//SaveUser is for saving a new user
 func (repository *Repository) SaveUser(user *User) error {
 	stmt, err := repository.Conn.Prepare("INSERT INTO api_user(username, email, password) VALUES(?,?,?)")
 	if err != nil {
