@@ -28,12 +28,14 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 }
 
 func (repository *Repository) SaveCampaign(campaign *Campaign) error {
-	stmt, err := repository.Conn.Prepare("INSERT INTO campaign(name, description, id_mailing_list) VALUES(?,?,?)")
+	stmt, err := repository.Conn.Prepare(`INSERT INTO campaign(name, description, 
+id_mailing_list, template_name, template_path) VALUES(?,?,?,?,?)`)
 	if err != nil {
 		return err
 	}
 
-	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IdMailingList)
+	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IdMailingList, 
+		campaign.TemplateName, campaign.TemplatePath)
 	if errExec != nil {
 		return errExec
 	}
