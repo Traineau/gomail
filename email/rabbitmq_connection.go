@@ -9,7 +9,7 @@ import (
 
 var (
 	//RabbitMQChan is a pointer to a rabbitmq channel
-	RabbitMQChan  *amqp.Channel
+	RabbitMQChan *amqp.Channel
 	//RabbitMQQueue is a rabbitmq queue
 	RabbitMQQueue amqp.Queue
 )

@@ -12,7 +12,7 @@ import (
 
 var (
 	//ErrInvalidHash is the error message for invalid hash
-	ErrInvalidHash         = errors.New("the encoded hash is not in the correct format")
+	ErrInvalidHash = errors.New("the encoded hash is not in the correct format")
 	//ErrIncompatibleVersion is the error message for an incompatible version
 	ErrIncompatibleVersion = errors.New("incompatible version of argon2")
 )
