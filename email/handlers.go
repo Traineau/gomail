@@ -45,19 +45,19 @@ func CreateCampaign(w http.ResponseWriter, r *http.Request) {
 
 	db := database.DbConn
 	repository := Repository{Conn: db}
-	
+
 	if campaign.IDMailingList <= 0 {
 		helpers.WriteErrorJSON(w, http.StatusBadRequest, "mailing list id cannot be null")
 		return
 	}
-	
+
 	mailingList, err := repository.GetMailingList(campaign.IDMailingList)
 	if err != nil {
 		log.Print(err)
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not get mailing list")
 		return
 	}
-	
+
 	if mailingList == nil {
 		helpers.WriteErrorJSON(w, http.StatusNotFound, "mailing list does not exist")
 		return

@@ -35,7 +35,7 @@ id_mailing_list, template_name, template_path) VALUES(?,?,?,?,?)`)
 	if err != nil {
 		return err
 	}
-	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IDMailingList, 
+	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IDMailingList,
 		campaign.TemplateName, campaign.TemplatePath)
 
 	if errExec != nil {
