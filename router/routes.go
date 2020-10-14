@@ -22,7 +22,7 @@ type Route struct {
 // Routes slice of Route
 type Routes []Route
 
-// newRouter registers public routes
+//NewRouter registers public routes
 func NewRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)

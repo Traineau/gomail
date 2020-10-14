@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+//CreateMailingList is the handler func to create a new mailing list
 func CreateMailingList(w http.ResponseWriter, r *http.Request) {
 	var mailingList MailingList
 	err := json.NewDecoder(r.Body).Decode(&mailingList)
@@ -32,6 +33,7 @@ func CreateMailingList(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, mailingList)
 }
 
+//CreateCampaign is a handler func to create a new campaign
 func CreateCampaign(w http.ResponseWriter, r *http.Request) {
 	var campaign Campaign
 	err := json.NewDecoder(r.Body).Decode(&campaign)
@@ -54,6 +56,7 @@ func CreateCampaign(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, campaign)
 }
 
+//AddRecipientToMailinglist is a handler func to add recipient to a mailing list
 func AddRecipientToMailinglist(w http.ResponseWriter, r *http.Request) {
 	var recipients []*Recipient
 	err := json.NewDecoder(r.Body).Decode(&recipients)
@@ -106,6 +109,7 @@ func AddRecipientToMailinglist(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, mailingList)
 }
 
+//GetMailingList is a handler func to get a mailing list by id
 func GetMailingList(w http.ResponseWriter, r *http.Request) {
 
 	db := database.DbConn
@@ -144,6 +148,7 @@ func GetMailingList(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, mailingList)
 }
 
+//DeleteRecipientsFromMailinglist is a handler func to delete recipients from a mailing list
 func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 	db := database.DbConn
 	repository := Repository{Conn: db}
@@ -181,6 +186,7 @@ func DeleteRecipientsFromMailinglist(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, nil)
 }
 
+//SendCampaignMessage is a handler func to send a message for a campaign
 func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 	rbmqChanCreation := RBMQQueuecreation{
 		RabbitMQChan:  RabbitMQChan,
@@ -188,14 +194,14 @@ func SendCampaignMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	muxVars := mux.Vars(r)
 
-	campaignId, err := helpers.ParseInt64(muxVars["id"])
+	urlCampaignID, err := helpers.ParseInt64(muxVars["id"])
 	if err != nil {
 		helpers.WriteErrorJSON(w, http.StatusInternalServerError, "could not parse id")
 		return
 	}
 
 	campaignID := Campaign{
-		ID: campaignId,
+		ID: urlCampaignID,
 	}
 
 	body, err := json.Marshal(campaignID)
