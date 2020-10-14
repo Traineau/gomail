@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// DbConn is a pointer to an sql DB Connection
 var (
 	DbConn *sql.DB
 )
@@ -71,7 +72,7 @@ func main() {
 
 			var mailingList *email.MailingList
 			if campaignFromRepo != nil {
-				mailingList, err = repository.GetMailingList(campaignFromRepo.IdMailingList)
+				mailingList, err = repository.GetMailingList(campaignFromRepo.IDMailingList)
 				if err != nil {
 					log.Printf("ERROR %+v", err)
 				}

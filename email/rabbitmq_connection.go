@@ -8,15 +8,19 @@ import (
 )
 
 var (
+	//RabbitMQChan is a pointer to a rabbitmq channel
 	RabbitMQChan  *amqp.Channel
+	//RabbitMQQueue is a rabbitmq queue
 	RabbitMQQueue amqp.Queue
 )
 
+//RBMQQueuecreation is a rabbitmq model
 type RBMQQueuecreation struct {
 	RabbitMQChan  *amqp.Channel
 	RabbitMQQueue amqp.Queue
 }
 
+//RabbitMqEnv contains rabbitmq env credentials
 type RabbitMqEnv struct {
 	RabbitMqHost string `env:"RABBITMQ_HOST"`
 	RabbitMqPort string `env:"RABBITMQ_PORT"`
@@ -24,6 +28,7 @@ type RabbitMqEnv struct {
 	RabbitMqPass string `env:"RABBITMQ_DEFAULT_PASS"`
 }
 
+//ConnectToRabbitMQ is for connecting to rabbitmq
 func ConnectToRabbitMQ() error {
 	time.Sleep(50 * time.Second)
 	cfg := RabbitMqEnv{}

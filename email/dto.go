@@ -25,7 +25,7 @@ type Campaign struct {
 	Description   string `json:"description,omitempty"`
 	TemplateName  string `json:"template_name,omitempty"`
 	TemplatePath  string `json:"template_path,omitempty"`
-	IdMailingList int64  `json:"id_mailing_list,omitempty"`
+	IDMailingList int64  `json:"id_mailing_list,omitempty"`
 }
 
 // MailingList with recipients emails
@@ -36,6 +36,7 @@ type MailingList struct {
 	Recipients  []*Recipient `json:"recipients" db:"-"`
 }
 
+//CampaignID represent a campaign ID
 type CampaignID struct {
 	ID int64 `json:"id"`
 }

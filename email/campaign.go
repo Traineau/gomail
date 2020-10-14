@@ -4,6 +4,7 @@ import (
 	"database/sql"
 )
 
+//GetCampaign get a campaign by id in the database
 func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 	row := repository.Conn.QueryRow("SELECT c.id, c.name, c.description, c.template_name, c.template_path, c.id_mailing_list FROM campaign c "+
 		"WHERE c.id=(?)", id)
@@ -19,7 +20,7 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 			Description:   description,
 			TemplateName:  templateName,
 			TemplatePath:  templatePath,
-			IdMailingList: idMailingList,
+			IDMailingList: idMailingList,
 		}
 		return &campaign, nil
 	default:
@@ -27,13 +28,14 @@ func (repository *Repository) GetCampaign(id int64) (*Campaign, error) {
 	}
 }
 
+//SaveCampaign save a new campaign in database
 func (repository *Repository) SaveCampaign(campaign *Campaign) error {
 	stmt, err := repository.Conn.Prepare("INSERT INTO campaign(name, description, id_mailing_list) VALUES(?,?,?)")
 	if err != nil {
 		return err
 	}
 
-	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IdMailingList)
+	res, errExec := stmt.Exec(campaign.Name, campaign.Description, campaign.IDMailingList)
 	if errExec != nil {
 		return errExec
 	}

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 )
 
+//GetMailingList gets a mailing list by ID from the database
 func (repository *Repository) GetMailingList(id int64) (*MailingList, error) {
 	row := repository.Conn.QueryRow("SELECT m.id, m.name, m.description FROM mailing_list m "+
 		"WHERE m.id=(?)", id)
@@ -23,6 +24,7 @@ func (repository *Repository) GetMailingList(id int64) (*MailingList, error) {
 	}
 }
 
+//SaveMailingList saves a new mailing list to database
 func (repository *Repository) SaveMailingList(mailingList *MailingList) error {
 	stmt, err := repository.Conn.Prepare("INSERT INTO mailing_list(name, description) VALUES(?,?)")
 	if err != nil {
