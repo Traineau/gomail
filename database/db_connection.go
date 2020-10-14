@@ -23,7 +23,6 @@ type Config struct {
 	DbName     string `env:"MYSQL_DATABASE"`
 	DbUser     string `env:"MYSQL_USER"`
 	DbPassword string `env:"MYSQL_PASSWORD"`
-	DbConn     *sql.DB
 }
 
 // Connect connection to database
@@ -36,7 +35,6 @@ func Connect() error {
 		DbName + "?parseTime=true&charset=utf8"
 
 	db, err := sql.Open("mysql", dsn)
-
 	if err != nil {
 		return err
 	}

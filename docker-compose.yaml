@@ -63,4 +63,5 @@ services:
 
 networks:
   backend:
+    name: gomail-network
     driver: "bridge"
